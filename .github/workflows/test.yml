@@ -31,8 +31,10 @@ jobs:
     - run: pipenv run pip list
     - if: ${{ github.event_name == 'pull_request' }}
       run: pipenv run pre-commit run --show-diff-on-failure --color always --all-files --hook-stage pre-commit
-    - run: pipenv run pytest -n auto --cov=.
+    - run: pipenv run pytest -n auto --cov=. --junitxml=junit.xml -o junit_family=legacy
     - run: pipenv run coverage xml
+      if: ${{ !cancelled() }}
     - uses: codecov/codecov-action@v4
+      if: ${{ !cancelled() }}
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
